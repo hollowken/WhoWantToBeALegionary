@@ -1,0 +1,9 @@
+button {
+    margin-top: 25px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

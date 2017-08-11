@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Пак генератор</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/generator.css">
+    <script src="jquery.js"></script>
+</head>
+<body>
+
+<div class="main">
+    <h2>Пак генератор</h2>
+    <p>галочкой отмечается правильный ответ</p>
+
+    <select name="level[]" id="level_select">
+        <option value="l25">Уровень 25</option>
+        <option value="l24">Уровень 24</option>
+        <option value="l23">Уровень 23</option>
+        <option value="l22">Уровень 22</option>
+        <option value="l21">Уровень 21</option>
+        <option value="l20">Уровень 20</option>
+        <option value="l19">Уровень 19</option>
+        <option value="l18">Уровень 18</option>
+        <option value="l17">Уровень 17</option>
+        <option value="l16">Уровень 16</option>
+        <option value="l15">Уровень 15</option>
+        <option value="l14">Уровень 14</option>
+        <option value="l13">Уровень 13</option>
+        <option value="l12">Уровень 12</option>
+        <option value="l11">Уровень 11</option>
+        <option value="l10">Уровень 10</option>
+        <option value="l9">Уровень 9</option>
+        <option value="l8">Уровень 8</option>
+        <option value="l7">Уровень 7</option>
+        <option value="l6">Уровень 6</option>
+        <option value="l5">Уровень 5</option>
+        <option value="l4">Уровень 4</option>
+        <option value="l3">Уровень 3</option>
+        <option value="l2">Уровень 2</option>
+        <option value="l1">Уровень 1</option>
+    </select>
+
+    <div class="quest_change">
+        <div class="quest">
+            <p>Вопрос</p>
+            <input type="text" id="question">
+        </div>
+
+        <div class="answers">
+            <span class="col1">
+            <div class="ans1">
+                <p>Ответ 1</p>
+                <input type="text" id="a1">
+                <input type="checkbox" id="ra1">
+            </div>
+
+            <div class="ans2">
+                <p>Ответ 2</p>
+                <input type="text" id="a2">
+                <input type="checkbox" id="ra2">
+            </div>
+        </span>
+
+            <span class="col2">
+
+            <div class="ans3">
+                <p>Ответ 3</p>
+                <input type="text" id="a3">
+                <input type="checkbox" id="ra3">
+            </div>
+
+            <div class="ans4">
+                <p>Ответ 4</p>
+                <input type="text" id="a4">
+                <input type="checkbox" id="ra4">
+            </div>
+
+        </span>
+        </div>
+
+    </div>
+
+    <div class="save">
+        <form>
+            <h4>Название пака</h4>
+            <input type="text" id="packName" required><br>
+            <button type="submit" id="save">Скачать</button>
+        </form>
+        <a hidden id="download"></a>
+    </div>
+</div>
+<script src="generator.js"></script>
+</body>
+</html>

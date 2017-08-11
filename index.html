@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Кто хочет стать легионером</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="jquery.js"></script>
+</head>
+<body>
+
+<div class="main">
+    <h2>Кто хочет стать легионером</h2>
+
+    <div class="menu">
+        <ul>
+            <a href="host.html">
+                <li>Войти за ведущего</li>
+            </a>
+            <a href="ready.html">
+                <li>Войти за игрока</li>
+            </a>
+            <a href="game.html">
+                <li>Смотреть игру</li>
+            </a>
+        </ul>
+    </div>
+
+    <h3 id="status">Статус: </h3>
+
+</div>
+
+<script src="./socket.io/socket.io.js"></script>
+<script>
+
+    $(function () {
+        var socket = io();
+        var hostChoosing = false;
+        var gameStarted = false;
+        var playerIn = false;
+
+        $('a:first-of-type').click(function (e) {
+            if (hostChoosing || hostReady) e.preventDefault();
+            else socket.emit('host join');
+        });
+
+        $('a:nth-of-type(2)').click(function (e) {
+           if (!hostReady) e.preventDefault();
+           else socket.emit('player join');
+        });
+
+        socket.on('info', function (msg) {
+            gameStarted = msg['gameStarted'];
+            hostChoosing = msg['hostChoosing'];
+            playerIn = msg['playerIn'];
+            hostReady = msg['hostReady'];
+
+            console.log(hostReady);
+
+            if (hostChoosing) {
+                $('a:first-of-type>li').css('background-color', 'grey');
+                $('a:first-of-type').css('border-color', 'grey');
+                $('#status').html('Статус: ведущий выбирает пак вопросов');
+            } else {
+                $('#status').html('Статус: ожидаем ведущего');
+            }
+
+            if(!hostReady) {
+                $('a:nth-of-type(2)>li').css('background-color', 'grey');
+                $('a:nth-of-type(2)').css('border-color', 'grey');
+            } else {
+                $('#status').html('Статус: ведущий ожидает игрока');
+                $('a:nth-of-type(2)>li').css('background-color', 'transparent');
+                $('a:nth-of-type(2)').css('border-color', 'white');
+            }
+
+            if (!gameStarted) {
+                $('a:last-of-type').hide();
+            } else {
+                $('a:last-of-type').show();
+                $('a:first-of-type').hide();
+                $('a:nth-of-type(2)').hide();
+                $('#status').html('идёт игра');
+            }
+        });
+    });
+</script>
+</body>
+</html>

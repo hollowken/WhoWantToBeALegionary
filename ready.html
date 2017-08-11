@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Комната ожидания</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="jquery.js"></script>
+</head>
+<body>
+<div class="main">
+    <h2>Ожидаем готовности обоих игроков</h2>
+
+</div>
+
+<script src="./socket.io/socket.io.js"></script>
+<script>
+    var host = false;
+    var player = false;
+    $(function () {
+        var socket = io();
+        socket.emit('player connect');
+        socket.on('room info', function (msg) {
+            host = msg['host'];
+            player = msg['player'];
+
+            if(host && player) {
+                $('h2').html('Игроки готовы');
+                window.location.replace("game.html");
+            }
+        });
+    });
+</script>
+</body>
+</html>

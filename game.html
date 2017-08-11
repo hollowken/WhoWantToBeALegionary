@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Кто хочет стать легионером - игра</title>
+    <link rel="stylesheet" href="css/game.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <script src="jquery.js"></script>
+</head>
+<body>
+<div class="game">
+    <div class="top">
+        <div class="info">
+            <p id="money">Выигрыш: 0 рублей</p>
+            <p id="level">Уровень: 25</p>
+            <p id="fails">Ошибок: 0</p>
+        </div>
+
+        <div class="help">
+            <p><img src="img/icon1.png" id="quad"></p>
+            <p><img src="img/icon2.png" id="half"></p>
+            <p><img src="img/icon3.png" id="phone"></p>
+            <p><img src="img/icon4.png" id="error"></p>
+            <p><img src="img/icon5.png" id="dice"></p>
+        </div>
+    </div>
+
+    <div class="menu">
+        <div class="host-menu">
+            <button id="next-question">Следующий вопрос</button>
+            <br>
+        </div>
+        <p id="dice-info">С кубика выпало: </p>
+    </div>
+
+
+    <div class="question">
+        <p id="question">Ждем пока хост раздуплится и начнет игру</p>
+        <div class="answers">
+            <span class="col1">
+            <p id="a1"></p>
+            <p id="a2"></p>
+        </span>
+            <span class="col2">
+            <p id="a3"></p>
+            <p id="a4"></p>
+        </span>
+        </div>
+    </div>
+</div>
+
+<script src="./socket.io/socket.io.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
