@@ -71,6 +71,10 @@ io.on('connection', function (socket) {
         sendInfoMM();
     });
 
+    socket.on('get pack', function () {
+       socket.emit('pack', pack);
+    });
+
     socket.on('player connect', function () {
         sendInfoMM();
         sendRoomInfo();
@@ -186,8 +190,7 @@ io.on('connection', function (socket) {
             'level': level,
             'haveToFail': haveToFail,
             'fails': fails,
-            'roundHelp': roundHelp,
-            'pack': pack
+            'roundHelp': roundHelp
         });
     }
 
