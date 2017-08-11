@@ -162,19 +162,44 @@ $(function () {
         if (helpButtons['error']) socket.emit('use error');
     }
 
+
 });
 
 function loadLevel(lvl) {
+    if (pack['name'] === undefined) return false;
     console.log('level load ' + lvl);
     var lvlToLoad = pack['questions']['question' + lvl];
-    $('#question').html(lvlToLoad['question']);
+    var question = $('#question');
+    question.html(lvlToLoad['question']);
+    question.hide();
+    question.removeClass('animated fadeIn');
     for (var i = 1; i <= 4; i++) {
         var ans = $('#a' + i);
         ans.html(lvlToLoad['a' + i]['text']);
         ans.css('background-color', 'grey');
-        ans.show();
+        ans.hide();
+        ans.removeClass('animated fadeIn');
     }
     clickAble = true;
+    animateNextLevel();
+}
+
+function animateNextLevel() {
+    var question = $('#question');
+    question.addClass('animated fadeIn');
+    setTimeout(function () {
+        question.show();
+    }, 1);
+    for(var i = 1; i <= 4; i++) {
+        (function () {
+            var ans = $('#a'+i);
+            ans.addClass('animated fadeIn');
+            setTimeout(function () {
+                ans.show();
+                console.log('answer ' + i + ' has showed');
+            }, i * 3000);
+        })();
+    }
 }
 
 function updateHud() {
