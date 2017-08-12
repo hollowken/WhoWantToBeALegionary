@@ -49,6 +49,7 @@ app.get('/ready.html', function (req, res) {
     if (req.cookies.type === 'host') {
         hostReady = true;
         pack = JSON.parse(fs.readFileSync('./packs/' + req.cookies.name, 'utf8'));
+        level = 25;
     }
     else {
         res.cookie('type', 'player');
@@ -62,7 +63,7 @@ app.use(require('express').static('./'));
 
 io.on('connection', function (socket) {
 
-    sendGameInfo();
+    if(gameStarted) sendGameInfo();
 
     sendInfoMM();
 
@@ -72,7 +73,8 @@ io.on('connection', function (socket) {
     });
 
     socket.on('get pack', function () {
-       socket.emit('pack', pack);
+        if (pack['name'] === undefined) socket.emit('pack', 'pack isn\'t set');
+        else socket.emit('pack', pack);
     });
 
     socket.on('player connect', function () {
@@ -82,11 +84,11 @@ io.on('connection', function (socket) {
 
     socket.on('take ans', function (myAns) {
         var rightAns;
-        for (var i = 1; i <= 4; i++) if (pack['questions']['question'+level]['a' + i]['true']) rightAns = 'a' + i;
+        for (var i = 1; i <= 4; i++) if (pack['questions']['question' + level]['a' + i]['true']) rightAns = 'a' + i;
         if (myAns === rightAns) {
             io.emit('answer', {for: 'everyone', 'answer': true, 'myAns': myAns, 'rightAns': rightAns});
             if (!gameLoosed) {
-                if(level >= 10) money += moneyLightLevels;
+                if (level >= 10) money += moneyLightLevels;
                 else money += moneyHighLevels;
                 haveToFail = false;
             } else {
@@ -95,7 +97,7 @@ io.on('connection', function (socket) {
         } else {
             io.emit('answer', {for: 'everyone', 'answer': false, 'myAns': myAns, 'rightAns': rightAns});
             if (!haveToFail) {
-                if(level >= 10) money -= moneyLightLevels * 2;
+                if (level >= 10) money -= moneyLightLevels * 2;
                 else money -= moneyHighLevels * 2;
                 if (money < 0) money = 0;
                 fails++;
@@ -108,6 +110,15 @@ io.on('connection', function (socket) {
             }
         }
         sendGameInfo();
+
+        if (level === 1) {
+            gameStarted = false;
+            gameLoosed = false;
+            fails = 0;
+            money = 0;
+            pack = {};
+            io.emit('game ended', {for: 'everyone'});
+        }
     });
 
     socket.on('use quad', function (item) {
@@ -153,11 +164,11 @@ io.on('connection', function (socket) {
     });
 
     socket.on('next level', function () {
-       level--;
-       if (level < 1) level = 1;
-       roundHelp = false;
-       haveToFail = false;
-       sendGameInfo();
+        if (!gameStarted) return false;
+        level--;
+        roundHelp = false;
+        haveToFail = false;
+        sendGameInfo();
     });
 
     function removeAnswers(item) {

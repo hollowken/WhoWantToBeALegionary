@@ -1,3 +1,5 @@
+'use strict';
+
 var host = false;
 var player = false;
 var money = 0;
@@ -19,7 +21,7 @@ var helpButtons = {
 };
 
 var roundHelp = false;
-
+var answersAnimationTimers = [0, 0, 0, 0];
 
 
 $(function () {
@@ -52,6 +54,7 @@ $(function () {
 
     socket.on('pack', function (msg) {
         if (packGot) return true;
+        if (msg === 'pack isn\'t set') return window.location.href = '/';
         pack = msg;
         packGot = true;
         console.log('Pack ' + pack['name'] + ' got');
@@ -135,7 +138,7 @@ $(function () {
 
             for (var i = 1; i <= 4; i++) if (!answers['a' + i]['true']) right.push(i);
 
-            item = right[Math.floor(Math.random() * right.length)];
+            var item = right[Math.floor(Math.random() * right.length)];
 
             socket.emit('use quad', item);
         }
@@ -174,11 +177,14 @@ function loadLevel(lvl) {
     question.hide();
     question.removeClass('animated fadeIn');
     for (var i = 1; i <= 4; i++) {
-        var ans = $('#a' + i);
-        ans.html(lvlToLoad['a' + i]['text']);
-        ans.css('background-color', 'grey');
-        ans.hide();
-        ans.removeClass('animated fadeIn');
+        (function () {
+            if (answersAnimationTimers[i - 1] !== 0) clearTimeout(answersAnimationTimers[i - 1]);
+            var ans = $('#a' + i);
+            ans.html(lvlToLoad['a' + i]['text']);
+            ans.css('background-color', 'grey');
+            ans.hide();
+            ans.removeClass('animated fadeIn');
+        })();
     }
     clickAble = true;
     animateNextLevel();
@@ -194,9 +200,8 @@ function animateNextLevel() {
         (function () {
             var ans = $('#a'+i);
             ans.addClass('animated fadeIn');
-            setTimeout(function () {
+            answersAnimationTimers[i - 1] = setTimeout(function () {
                 ans.show();
-                console.log('answer ' + i + ' has showed');
             }, i * 3000);
         })();
     }
