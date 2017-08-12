@@ -117,6 +117,9 @@ io.on('connection', function (socket) {
             fails = 0;
             money = 0;
             pack = {};
+            hostReady = false;
+            hostChoosing = false;
+            playerIn = false;
             io.emit('game ended', {for: 'everyone'});
         }
     });

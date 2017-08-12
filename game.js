@@ -23,6 +23,8 @@ var helpButtons = {
 var roundHelp = false;
 var answersAnimationTimers = [0, 0, 0, 0];
 
+const delayBeforeRightAnswer = 6000;
+
 
 $(function () {
     var socket = io();
@@ -71,12 +73,8 @@ $(function () {
         console.log('answer got');
         var myAns = msg['myAns'];
         var rightAns = msg['rightAns'];
-        if(msg['answer'] === true) {
-            $('#'+myAns).css('background-color', 'green');
-        } else {
-            $('#'+rightAns).css('background-color', 'green');
-            $('#'+myAns).css('background-color', 'orange');
-        }
+        if (msg['answer'] === true) animateRightAnswer(myAns);
+        else animateWrongAnswer(rightAns, myAns);
     });
 
     socket.on('dice info', function (msg) {
@@ -121,7 +119,7 @@ $(function () {
     });
 
     $('.answers p').click(function (e) {
-        if(type !== 'player' || !clickAble) return e.preventDefault();
+        if (type !== 'player' || !clickAble) return e.preventDefault();
         var myAns = $(this).attr('id');
         clickAble = false;
         socket.emit('take ans', myAns);
@@ -168,6 +166,38 @@ $(function () {
 
 });
 
+function animateRightAnswer(item) {
+    animatePlayerPick(item);
+    setTimeout(function () {
+        $('#' + item).css('background-color', 'green');
+    }, delayBeforeRightAnswer);
+}
+
+function animateWrongAnswer(right, wrong) {
+    animatePlayerPick(wrong);
+    setTimeout(function () {
+        $('#' + right).css('background-color', 'green');
+        $('#' + wrong).css('background-color', 'orange');
+    }, delayBeforeRightAnswer);
+}
+
+function animatePlayerPick(item) {
+    var ans = $('#' + item);
+    ans.css('background-color', 'yellow');
+    var delay;
+    for (var i = 1; i <= 3; i++) {
+        (function () {
+            delay = (i * 2000) - 1000;
+            setTimeout(function () {
+                ans.css('background-color', 'grey');
+            }, delay);
+            setTimeout(function () {
+                ans.css('background-color', 'yellow');
+            }, delay + 1000);
+        })();
+    }
+}
+
 function loadLevel(lvl) {
     if (pack['name'] === undefined) return false;
     console.log('level load ' + lvl);
@@ -196,9 +226,9 @@ function animateNextLevel() {
     setTimeout(function () {
         question.show();
     }, 1);
-    for(var i = 1; i <= 4; i++) {
+    for (var i = 1; i <= 4; i++) {
         (function () {
-            var ans = $('#a'+i);
+            var ans = $('#a' + i);
             ans.addClass('animated fadeIn');
             answersAnimationTimers[i - 1] = setTimeout(function () {
                 ans.show();
