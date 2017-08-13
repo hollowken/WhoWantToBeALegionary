@@ -127,6 +127,7 @@ io.on('connection', function (socket) {
         removeAnswers([item]);
         helpButtons['quad'] = false;
         sendGameInfo();
+        sendBonusInfo('quad');
         console.log('quad used');
     });
 
@@ -134,12 +135,14 @@ io.on('connection', function (socket) {
         removeAnswers(items);
         helpButtons['half'] = false;
         sendGameInfo();
+        sendBonusInfo('half');
         console.log('half used');
     });
 
     socket.on('use phone', function () {
         helpButtons['phone'] = false;
         sendGameInfo();
+        sendBonusInfo('phone');
         console.log('phone used');
     });
 
@@ -147,6 +150,7 @@ io.on('connection', function (socket) {
         helpButtons['error'] = false;
         haveToFail = true;
         sendGameInfo();
+        sendBonusInfo('error');
         console.log('error used');
     });
 
@@ -157,6 +161,7 @@ io.on('connection', function (socket) {
         else if (item === 6) useDiceError();
         io.emit('dice info', {for: 'everyone', 'item': item});
         sendGameInfo();
+        sendBonusInfo('dice');
         console.log('dice used ' + item);
     });
 
@@ -228,6 +233,10 @@ io.on('connection', function (socket) {
 
     function useDiceError() {
         haveToFail = true;
+    }
+
+    function sendBonusInfo(msg) {
+        io.emit('bonus info', {for: 'everyone', 'bonus': msg});
     }
 });
 
