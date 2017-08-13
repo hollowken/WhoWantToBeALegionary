@@ -3,7 +3,7 @@
 var host = false;
 var player = false;
 var money = 0;
-var level = 25;
+var level = 26;
 var fails = 0;
 var haveToFail = false;
 
@@ -115,6 +115,7 @@ $(function () {
 
     $('#next-question').click(function (e) {
         if (type !== 'host') return e.preventDefault();
+        if (level === 26) $(this).html('Следующий вопрос');
         socket.emit('next level');
     });
 
@@ -162,8 +163,6 @@ $(function () {
     function useError() {
         if (helpButtons['error']) socket.emit('use error');
     }
-
-
 });
 
 function animateRightAnswer(item) {
@@ -201,23 +200,35 @@ function animatePlayerPick(item) {
 function loadLevel(lvl) {
     if (pack['name'] === undefined) return false;
     console.log('level load ' + lvl);
-    var lvlToLoad = pack['questions']['question' + lvl];
-    var question = $('#question');
-    question.html(lvlToLoad['question']);
-    question.hide();
-    question.removeClass('animated fadeIn');
-    for (var i = 1; i <= 4; i++) {
-        (function () {
-            if (answersAnimationTimers[i - 1] !== 0) clearTimeout(answersAnimationTimers[i - 1]);
-            var ans = $('#a' + i);
-            ans.html(lvlToLoad['a' + i]['text']);
-            ans.css('background-color', 'grey');
-            ans.hide();
-            ans.removeClass('animated fadeIn');
-        })();
+    if (lvl !== 26) {
+        var lvlToLoad = pack['questions']['question' + lvl];
+        var question = $('#question');
+        question.html(lvlToLoad['question']);
+        question.hide();
+        question.removeClass('animated fadeIn');
+        for (var i = 1; i <= 4; i++) {
+            (function () {
+                if (answersAnimationTimers[i - 1] !== 0) clearTimeout(answersAnimationTimers[i - 1]);
+                var ans = $('#a' + i);
+                ans.html(lvlToLoad['a' + i]['text']);
+                ans.css('background-color', 'grey');
+                ans.hide();
+                ans.removeClass('animated fadeIn');
+            })();
+        }
+        clickAble = true;
+        animateNextLevel();
+    } else {
+        $('#level').html('Игра не начата');
+        $('#next-question').html('Начать игру');
+        for (var i = 1; i <= 4; i++) {
+            (function () {
+                var ans = $('#a' + i);
+                ans.hide();
+            })();
+        }
     }
-    clickAble = true;
-    animateNextLevel();
+
 }
 
 function animateNextLevel() {

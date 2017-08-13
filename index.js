@@ -18,7 +18,7 @@ var helpButtons = {
     'dice': true
 };
 var pack = {};
-var level = 25;
+var level = 26;
 var money = 0;
 var fails = 0;
 var haveToFail = false;
@@ -49,7 +49,7 @@ app.get('/ready.html', function (req, res) {
     if (req.cookies.type === 'host') {
         hostReady = true;
         pack = JSON.parse(fs.readFileSync('./packs/' + req.cookies.name, 'utf8'));
-        level = 25;
+        level = 26;
     }
     else {
         res.cookie('type', 'player');
