@@ -22,7 +22,6 @@ var level = 26;
 var money = 0;
 var fails = 0;
 var haveToFail = false;
-var roundHelp = false;
 var gameLoosed = false;
 
 const moneyLightLevels = 5;
@@ -127,49 +126,48 @@ io.on('connection', function (socket) {
     socket.on('use quad', function (item) {
         removeAnswers([item]);
         helpButtons['quad'] = false;
-        roundHelp = true;
         sendGameInfo();
+        sendBonusInfo('quad');
         console.log('quad used');
     });
 
     socket.on('use half', function (items) {
         removeAnswers(items);
         helpButtons['half'] = false;
-        roundHelp = true;
         sendGameInfo();
+        sendBonusInfo('half');
         console.log('half used');
     });
 
     socket.on('use phone', function () {
         helpButtons['phone'] = false;
-        roundHelp = true;
         sendGameInfo();
+        sendBonusInfo('phone');
         console.log('phone used');
     });
 
     socket.on('use error', function () {
         helpButtons['error'] = false;
-        roundHelp = true;
         haveToFail = true;
         sendGameInfo();
+        sendBonusInfo('error');
         console.log('error used');
     });
 
     socket.on('use dice', function (item) {
         helpButtons['dice'] = false;
-        roundHelp = true;
         if (item > 1 && item <= 3) removeAnswers([useDiceQuad()]);
         else if (item > 3 && item <= 5) removeAnswers(useDiceHalf());
         else if (item === 6) useDiceError();
         io.emit('dice info', {for: 'everyone', 'item': item});
         sendGameInfo();
+        sendBonusInfo('dice');
         console.log('dice used ' + item);
     });
 
     socket.on('next level', function () {
         if (!gameStarted) return false;
         level--;
-        roundHelp = false;
         haveToFail = false;
         sendGameInfo();
     });
@@ -203,8 +201,7 @@ io.on('connection', function (socket) {
             'money': money,
             'level': level,
             'haveToFail': haveToFail,
-            'fails': fails,
-            'roundHelp': roundHelp
+            'fails': fails
         });
     }
 
@@ -236,6 +233,10 @@ io.on('connection', function (socket) {
 
     function useDiceError() {
         haveToFail = true;
+    }
+
+    function sendBonusInfo(msg) {
+        io.emit('bonus info', {for: 'everyone', 'bonus': msg});
     }
 });
 
