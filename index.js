@@ -22,7 +22,6 @@ var level = 26;
 var money = 0;
 var fails = 0;
 var haveToFail = false;
-var roundHelp = false;
 var gameLoosed = false;
 
 const moneyLightLevels = 5;
@@ -127,7 +126,6 @@ io.on('connection', function (socket) {
     socket.on('use quad', function (item) {
         removeAnswers([item]);
         helpButtons['quad'] = false;
-        roundHelp = true;
         sendGameInfo();
         console.log('quad used');
     });
@@ -135,21 +133,18 @@ io.on('connection', function (socket) {
     socket.on('use half', function (items) {
         removeAnswers(items);
         helpButtons['half'] = false;
-        roundHelp = true;
         sendGameInfo();
         console.log('half used');
     });
 
     socket.on('use phone', function () {
         helpButtons['phone'] = false;
-        roundHelp = true;
         sendGameInfo();
         console.log('phone used');
     });
 
     socket.on('use error', function () {
         helpButtons['error'] = false;
-        roundHelp = true;
         haveToFail = true;
         sendGameInfo();
         console.log('error used');
@@ -157,7 +152,6 @@ io.on('connection', function (socket) {
 
     socket.on('use dice', function (item) {
         helpButtons['dice'] = false;
-        roundHelp = true;
         if (item > 1 && item <= 3) removeAnswers([useDiceQuad()]);
         else if (item > 3 && item <= 5) removeAnswers(useDiceHalf());
         else if (item === 6) useDiceError();
@@ -169,7 +163,6 @@ io.on('connection', function (socket) {
     socket.on('next level', function () {
         if (!gameStarted) return false;
         level--;
-        roundHelp = false;
         haveToFail = false;
         sendGameInfo();
     });
@@ -203,8 +196,7 @@ io.on('connection', function (socket) {
             'money': money,
             'level': level,
             'haveToFail': haveToFail,
-            'fails': fails,
-            'roundHelp': roundHelp
+            'fails': fails
         });
     }
 

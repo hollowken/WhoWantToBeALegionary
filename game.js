@@ -20,7 +20,17 @@ var helpButtons = {
     'dice': true
 };
 
-var roundHelp = false;
+var sounds = {
+    'startGame': new Howl({
+        src: ['audio/startGame.mp3'],
+        volume: 0.2
+    }),
+    'answerPicked': new Howl({
+        src: ['audio/answerPicked.mp3'],
+        volume: 0.5
+    })
+};
+
 var answersAnimationTimers = [0, 0, 0, 0];
 
 const delayBeforeRightAnswer = 6000;
@@ -47,7 +57,6 @@ $(function () {
         money = msg['money'];
         fails = msg['fails'];
         haveToFail = msg['haveToFail'];
-        roundHelp = msg['roundHelp'];
 
         console.log(helpButtons['quad']);
 
@@ -84,8 +93,7 @@ $(function () {
     });
 
     $('.help img').click(function (e) {
-        if (type !== 'player' || roundHelp) return e.preventDefault();
-        roundHelp = true;
+        if (type !== 'host') return e.preventDefault();
         var item;
 
         switch ($(this).attr('id')) {
@@ -120,7 +128,7 @@ $(function () {
     });
 
     $('.answers p').click(function (e) {
-        if (type !== 'player' || !clickAble) return e.preventDefault();
+        if (type !== 'host' || !clickAble) return e.preventDefault();
         var myAns = $(this).attr('id');
         clickAble = false;
         socket.emit('take ans', myAns);
@@ -219,14 +227,9 @@ function loadLevel(lvl) {
         clickAble = true;
         animateNextLevel();
     } else {
+        sounds.startGame.play();
         $('#level').html('Игра не начата');
         $('#next-question').html('Начать игру');
-        for (var i = 1; i <= 4; i++) {
-            (function () {
-                var ans = $('#a' + i);
-                ans.hide();
-            })();
-        }
     }
 
 }
